@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>根据路径传参</title>
+</head>
+<body>
+<div id="app">
+    <router-link to="/green">green</router-link>
+    <router-link to="/fruit">fruit</router-link>
+    <router-view></router-view>
+</div>
+<template id="green">
+    <div>
+        蔬菜
+        <router-link to="/green/organic">有机</router-link>
+        <router-link to="/green/inorganic">无机</router-link>
+        <router-view></router-view>
+    </div>
+</template>
+<template id="fruit">
+    <div>
+        水果
+    </div>
+</template>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+
+<script>
+    let green={template:'#green',};
+    let fruit={template:'#fruit',};
+    let organic={template:'<div>有机蔬菜</div>'};
+    let inorganic={template:'<div>无机蔬菜</div>'};
+    let router=new VueRouter({
+        routes:[
+            {path:'/green',component:green,
+            children:[
+                {path:'organic',component:organic,},//儿子中不能加/ 他会自动找到根路径
+                {path:'inorganic',component:inorganic,}
+            ]},
+            {path:'/fruit',component:fruit}
+        ]
+    });
+    let vm=new Vue({
+        el:'#app',
+        data:{
+
+        },
+        router
+
+    })
+</script>
+
+
+</body>
+</html>

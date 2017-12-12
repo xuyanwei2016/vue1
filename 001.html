@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<div id="app">
+    <panel :type="panel.color" v-for="(panel,index) in panels" :key="index" @saycolor="say"><!--:key="index"加上是为了不报警告-->
+        <div slot="heading" v-if="panel.title">{{panel.title}}</div>
+        <!--v-html可以识别html标签-->
+        <div slot="content" v-html="panel.content">{{panel.content}}</div>
+    </panel>
+    <!--<panel type="info"></panel>
+    <panel type="success"></panel>
+    <panel type="primary"></panel>-->
+
+</div>
+
+<template id="panel">
+    <div class="panel" :class="sty">
+        <div class="panel-heading">
+            <slot name="heading">readme</slot>
+        </div>
+        <div class="panel-body">
+            <slot name="content">没文章显示</slot>
+        </div>
+        <div class="panel-footer"><button @click="alertcolor">点我显示颜色</button></div>
+    </div>
+</template>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    let panel={
+        template:'#panel',
+        props:['type','m'],//定义接收的属性
+        computed:{
+            sty(){
+                console.log(this.type);
+                return 'panel-'+this.type
+            }
+        },
+        methods:{
+            alertcolor(){//emit方法不能出现大写的字母 否则匹配不到
+                this.$emit('saycolor',this.type)
+            }
+        }
+
+    };
+    let vm=new Vue({
+        methods:{
+            say(color){
+                alert(color)
+            }
+        },
+        el:'#app',
+        components:{panel},
+        data:{
+            panels:[
+                {color:'danger',title:'wwww',content:'<h1>这是一篇文章</h1>'},
+                {color:'info',title:'tttt',content:'<h2>这是二篇文章</h2>'},
+                {color:'success',content:'<h3>这是三篇文章</h3>'}
+            ]
+        },
+
+    })
+</script>
+</body>
+</html>

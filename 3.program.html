@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>program</title>
+</head>
+<body>
+<div id="app">
+    <button @click="gohome">首页</button>
+    <button @click="golist">列表</button>
+    <router-view></router-view>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+<script>
+    let home={
+      template:'<div>首页</div>'
+    };
+    let list={
+        template:'<div>列表</div>'
+    };
+    /*const routes=[
+        {path:'/home',component:home},
+        {path:'/list',component:list},
+    ];*/
+    const router=new VueRouter({
+        routes:[
+            {path:'/',component:home},
+            {path:'/list',component:list}
+        ]
+    });
+    let vm=new Vue({
+        el:'#app',
+        data:{},
+        methods:{
+            gohome(){
+                this.$router.history.replace('/')
+            },
+            golist(){
+                this.$router.history.replace('/list')
+            }
+        },
+        router
+    })
+</script>
+</body>
+</html>

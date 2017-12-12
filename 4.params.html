@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>根据路径传参</title>
+</head>
+<body>
+<div id="app">
+    <router-link v-for="article in articles" :to="{name:'zfpx',params:{id:article.id}}" tag="'div">{{article.title}}</router-link>
+<router-view></router-view>
+</div>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+
+<script>
+    let Article={
+        template:'<div>这是第{{id}}片文章</div>',
+        computed:{
+            id(){ return this.$route.params.id},
+        }
+        };
+    let E={template:'<div>请选择文章</div>'};
+    let router=new VueRouter({
+        routes:[
+            {path:'',component:E},
+            {path:'/article/:id',component:Article,name:'zfpx'}
+        ]
+        });
+    let vm=new Vue({
+        el:'#app',
+        data:{
+            articles:[
+                {title:'react文章',id:1},
+                {title:'vue文章',id:2},
+                {title:'angular文章',id:3}]
+        },
+        router
+
+    })
+</script>
+
+
+</body>
+</html>

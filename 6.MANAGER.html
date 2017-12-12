@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="node_modules/animate.css/animate.css">
+    <style>
+        .autor{ width: 600px; background: #f1f1f1; float: right;}
+    </style>
+</head>
+<body>
+<div id="app">
+    <div class="navbar navbar-inverse">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand">管理系统</a>
+            </div>
+            <ul class="navbar-nav nav">
+                <li><router-link to="/home">首页</router-link></li>
+                <li><router-link to="/list">列表</router-link></li>
+                <li><router-link to="/profile">个人</router-link></li>
+                <li><router-link to="/login">登录</router-link></li>
+            </ul>
+        </div>
+    </div>
+    <div class="container">
+        <router-view class="col-md-9"></router-view>
+    </div>
+<!--router-link和router-view是就近原则-->
+</div>
+
+<template id="home">
+    <div>
+        首页
+    </div>
+</template>
+<template id="list">
+    <div>
+        <ul class="list-group">
+            <li class="list-group-item" v-for="list in lists">{{list.title}}</li>
+        </ul>
+    </div>
+</template>
+<template id="profile">
+    <div class="row">
+        <ul class="nav nav-stacked col-md-3">
+            <li><router-link to="/profile/about">关于我</router-link></li>
+        </ul>
+        <router-view class="col-md-9"></router-view>
+    </div>
+</template>
+<template id="login">
+    <div>
+        登录
+    </div>
+</template>
+<script src="node_modules/axios/dist/axios.js"></script>
+<script src="node_modules/vue/dist/vue.js"></script>
+<script src="node_modules/vue-router/dist/vue-router.js"></script>
+<script>
+    let home={template:'#home'};
+    let list={template:'#list',
+    data(){return {lists:[]}},
+        beforeRouteEnter(to,from,next){
+        axios.get('./list.json').then((res)=>{
+            setTimeout(()=>{
+                next((vm)=>{
+                    vm.lists=res.data;
+                })
+            },3000)
+        })
+        },
+    /*created(){//目前只能在组件中获取数据
+        axios.get('./list.json').then((res)=>{
+            setTimeout(()=>{
+                this.lists=res.data
+            },3000)
+        })
+    }*/};
+    let profile={template:'#profile'};//个人中心
+    let login={template:'#login'};
+    let aboutme={template:`<div class="autor">郭敬明<p>郭敬明，1983年6月6日出生于四川自贡，中国作家、上海最世文化发展有限公司董事长、《最小说》等杂志主编。</p></div>`};
+    const router=new VueRouter({
+        /*scrollBehavior(to,from,ssssss){
+            if(ssssss){
+                return ssssss
+            }else{
+                return {x:0,y:0}
+            }
+        },*/
+        routes:[
+            {path:'/home',component:home},
+            {path:'/list',component:list},
+            {path:'/profile',component:profile,
+                children:[{path:'about',component:aboutme}],
+                meta:{needlogin:true},//相当于天了一条备注
+            },
+            {path:'/login',component:login}
+        ]
+    });
+    router.beforeEach(function(to,from,next){
+        console.log(to)
+        let flag = to.matched.some(route=>route.meta.needLogin);//如果有需要登陆的flag值就是true
+        if(flag){
+            if(sessionStorage.getItem('login')==='0'){
+                next({path:'/login'});//跳转到login，没登录
+            }else{
+                next();//登陆过了
+            }
+        }else{ //不需要登录 继续访问
+            next(); //如果ok 要调用next否则就卡死在当前路径了
+        }
+    });
+    let vm = new Vue({
+        el:'#app',
+        router
+    });
+</script>
+
+
+</body>
+</html>

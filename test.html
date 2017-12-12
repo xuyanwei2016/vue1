@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="node_modules/bootstrap/dist/css/bootstrap.css">
+</head>
+<body>
+<div id="app">
+
+</div>
+
+<script src="node_modules/vue/dist/vue.js"></script>
+<script>
+    let green={template:'<div>蔬菜</div>'};
+    let fruit={template:'<div>水果</div>'};
+    let org={template:'<div>有机蔬菜</div>'};
+    let inorg={template:'<div>无机蔬菜</div>'};
+    let router=new VueRouter({
+        routes:[
+            {path:'/green',component:green,
+                children:[
+                    {path:'',component:org},
+                    {path:'org',component:org},
+                    {path:'inorg',component:'inorg'}
+                ]
+            },
+            {path:'/fruit',component:fruit}
+        ]
+    })
+
+</script>
+</body>
+</html>
